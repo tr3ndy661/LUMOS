@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ... Your fonts and resets ... */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* MENU STYLES */
+
+.menu-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  padding: 2em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1;
+}
+
+.menu-overlay-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 2em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-open {
+  cursor: pointer;
+}
+
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  padding: 2em;
+  background: #ccff00;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  
+  /* Hides menu initially */
+  clip-path: polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%);}
+
+.menu-overlay-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2em; 
+}
+
+.menu-logo a {
+  color: #000;
+  text-decoration: none;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.menu-close {
+  cursor: pointer;
+}
+
+.menu-close p {
+  color: #000;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.menu-close-icon {
+  flex: 2;
+  display: flex;
+  align-items: flex-end;
+  cursor: pointer;
+}
+
+.menu-close-icon p {
+  font-size: 100px;
+  -webkit-text-stroke: 4px #ccff00; 
+  color: transparent; 
+
+  line-height: 70%;
+}
+
+.menu-copy {
+  flex: 4;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+.menu-link-item-holder a {
+    color: #000;
+    font-size: 80px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 85%;
+    display: inline-block; /* Important for width locking */
+    position: relative;
+}
+
+.menu-link-item {
+    overflow: hidden; /* Prevent any overflow during scramble */
+}
+
+.menu-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0; /* Remove any gaps that might cause shifting */
+}
+
+.menu-info {
+  display: flex;
+  margin-top: 2em;
+}
+
+.menu-info-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.menu-info-col a,
+.menu-info-col p {
+  color: #000;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.menu-preview {
+  flex: 2;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}

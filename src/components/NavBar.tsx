@@ -1,0 +1,165 @@
+"use client"
+
+import React, {useState, useRef, useEffect} from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
+import gsap from 'gsap'
+import { useGSAP } from '@gsap/react'
+import './menu.css'
+import { useTextScramble } from '@/hooks/useTextScramble'
+const menuLinks = [
+  {path: "/", label: "LUMOS"},
+  {path: "/", label: "Collection"},
+  {path: "/", label: "Manifesto"},
+  {path: "/", label: "Lab"}
+]
+
+const NavBar = () => {
+  const container = useRef<HTMLDivElement | null>(null)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { scramble } = useTextScramble(); 
+  const tl = useRef<gsap.core.Timeline | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLinkHover = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const target = e.currentTarget;
+    const originalText = target.getAttribute('data-text') || target.innerText;
+    scramble(target, originalText);
+  };
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useGSAP(() => {
+    if (!isMounted) return;
+    
+    gsap.set(".menu-link-item-holder a", { y: 75 });
+
+    tl.current = gsap.timeline({ paused: true })
+      .to(".menu-overlay", {
+        clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+        duration: 1.25,
+        ease: "power4.inOut",
+      })
+      .to(".menu-link-item-holder a", {
+        y: 0,
+        duration: 1,
+        stagger: 0.1,
+        ease: "power4.inOut",
+        delay: -0.75,
+      });
+  }, { scope: container, dependencies: [isMounted] });
+
+  useEffect(() => {
+    if (!isMounted) return;
+    
+    if (isMenuOpen) {
+      tl.current?.play();
+    } else {
+      tl.current?.reverse();
+    }
+  }, [isMenuOpen, isMounted]);
+
+  if (!isMounted) {
+    return null;
+  }
+
+  return (
+    <div className='menu-container' ref={container}>
+      
+      {/* Top Bar (Always Visible) */}
+      <div className='menu-bar'>
+        <div className='menu-logo'>
+          <Image 
+            src="/images/logo.svg" 
+            alt="LUMOS LOGO" 
+            width={32}
+            height={32}
+            className="invert"
+            priority
+          />
+          <Link href="/" className="font-bold tracking-tighter uppercase text-white">LUMOS</Link>
+        </div>
+         <div className="flex items-center gap-4">
+        <button className='px-6 py-4 bg-primary text-black text-xs font-bold uppercase rounded-full hover:bg-white transition-all tracking-tighter'>Shop</button>
+        <div className='menu-open' onClick={toggleMenu}>
+          <div className="hamburger-icon">
+            <span className={`hamburger-line ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
+            <span className={`hamburger-line ${isMenuOpen ? 'opacity-0' : ''}`}></span>
+            <span className={`hamburger-line ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      {/* Full Screen Overlay */}
+      <div className='menu-overlay'>
+        
+        {/* Overlay Top Bar */}
+        <div className='menu-overlay-bar'>
+          <div className='menu-logo'>
+            <Link href="/">LUMOS</Link>
+          </div>
+          <div className='menu-close' onClick={toggleMenu}>
+            <div className="hamburger-icon">
+              <span className={`hamburger-line ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
+              <span className={`hamburger-line ${isMenuOpen ? 'opacity-0' : ''}`}></span>
+              <span className={`hamburger-line ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+            </div>
+          </div>
+        </div>
+
+        {/* Big X Icon */}
+        <div className='menu-close-icon' onClick={toggleMenu}>
+          <svg width="40" height="40" viewBox="0 0 40 40">
+            <line x1="10" y1="10" x2="30" y2="30" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+            <line x1="30" y1="10" x2="10" y2="30" stroke="black" strokeWidth="3" strokeLinecap="round"/>
+          </svg>
+        </div>
+
+        {/* Links Section */}
+        <div className='menu-copy'>
+          <div className='menu-links'>
+            {menuLinks.map((link, index) => (
+              <div className='menu-link-item' key={index}>
+                <div className="menu-link-item-holder" onClick={toggleMenu}>
+                  <Link href={link.path} className='menu-link'
+                    onMouseEnter={handleLinkHover}>
+                    {link.label}
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Bottom Info Section */}
+          <div className='menu-info'>
+            <div className="menu-info-col">
+              <a href="#" onMouseEnter={handleLinkHover} data-text="X ↗">X &#8599;</a>
+                  <a href="#" onMouseEnter={handleLinkHover} data-text="Instagram ↗">Instagram &#8599;</a>
+                  <a href="#" onMouseEnter={handleLinkHover} data-text="LinkedIn ↗">LinkedIn &#8599;</a>
+                  <a href="#" onMouseEnter={handleLinkHover} data-text="Dribble ↗">Dribble &#8599;</a>
+            </div>
+            <div className="menu-info-col">
+              <p>shop@lumos.com</p>
+              <p>+249 1189 89751</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Preview Section (Bottom Right) */}
+        <div className='menu-preview'>
+          <p>View LinkedIn</p>
+        </div>
+      </div>
+     
+    </div>
+  )
+}
+
+export default NavBar
