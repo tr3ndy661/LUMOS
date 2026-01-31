@@ -29,7 +29,7 @@
 .menu-logo img {
   width: 32px;
   height: 32px;
-  filter: invert(1);
+  /* filter: invert(1);` */
 }
 
 .menu-overlay {

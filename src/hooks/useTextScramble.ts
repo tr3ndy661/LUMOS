@@ -14,7 +14,7 @@ export const useTextScramble = () => {
     
     const chars = '!<>-_\\/[]{}—=+*^?#________';
     let iteration = 0;
-    const speed = 30;
+    const speed = 35;
     
     const interval = setInterval(() => {
       element.innerText = finalText

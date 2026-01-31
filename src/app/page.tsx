@@ -5,6 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from '@gsap/react'
 import Lenis from '@studio-freight/lenis'
 
+
 gsap.registerPlugin(ScrollTrigger)
 
 export default function Home() {
@@ -144,7 +145,7 @@ useEffect(() => {
       </div>
       <div className="slider-title px-6 md:px-12 mb-16 flex justify-between items-end">
       <span className="text-primary font-mono text-xs uppercase tracking-widest mb-4 block">Series_01</span>
-        <h1>Your First Title</h1>
+        {/* <h1>Your First Title</h1> */}
       </div>
       <div className="slider-indicator">
         <div className="slider-indexes"></div> 

@@ -19,7 +19,6 @@ const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { scramble } = useTextScramble(); 
   const tl = useRef<gsap.core.Timeline | null>(null);
-  const [isMounted, setIsMounted] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -31,13 +30,7 @@ const NavBar = () => {
     scramble(target, originalText);
   };
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   useGSAP(() => {
-    if (!isMounted) return;
-    
     gsap.set(".menu-link-item-holder a", { y: 75 });
 
     tl.current = gsap.timeline({ paused: true })
@@ -53,21 +46,15 @@ const NavBar = () => {
         ease: "power4.inOut",
         delay: -0.75,
       });
-  }, { scope: container, dependencies: [isMounted] });
+  }, { scope: container });
 
   useEffect(() => {
-    if (!isMounted) return;
-    
     if (isMenuOpen) {
       tl.current?.play();
     } else {
       tl.current?.reverse();
     }
-  }, [isMenuOpen, isMounted]);
-
-  if (!isMounted) {
-    return null;
-  }
+  }, [isMenuOpen]);
 
   return (
     <div className='menu-container' ref={container}>
