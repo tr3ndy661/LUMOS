@@ -13,6 +13,7 @@ export default function Home() {
   const subtitleRef = useRef<HTMLParagraphElement>(null)
   const sliderRef = useRef<HTMLElement>(null)
   const [activeSlide, setActiveSlide] = useState(0)
+  const philosophyRef = useRef<HTMLDivElement>(null)
 
 const lenis = new Lenis();
 
@@ -93,6 +94,27 @@ useEffect(() => {
       }
     })
   }
+
+  // Typewriter animation
+  const text = "VISIONARY BY DESIGN";
+  const typewriterElement = document.querySelector('.typewriter-text');
+  
+  if (typewriterElement) {
+    ScrollTrigger.create({
+      trigger: '.typewriter-container',
+      start: 'top 70%',
+      onEnter: () => {
+        let i = 0;
+        const typeInterval = setInterval(() => {
+          typewriterElement.textContent = text.slice(0, i + 1);
+          i++;
+          if (i >= text.length) {
+            clearInterval(typeInterval);
+          }
+        }, 100);
+      }
+    });
+  }
 }, [])
 
   return (
@@ -100,7 +122,7 @@ useEffect(() => {
       {/* overlaty container */}
       <div className="">
             {/* Background Video */}
-      <div className="fixed inset-0 -z-10 w-full h-full   bg-black/60">
+      {/* <div className="fixed inset-0 -z-10 w-full h-full   bg-black/60">
         <video
         src="/videos/7565451-hd_2048_1080_25fps.mp4"
           className="w-full h-full object-cover"
@@ -108,16 +130,42 @@ useEffect(() => {
           muted
           loop
         />
+      </div> */}
+      
+      {/* Dark Interactive Animation */}
+      <div className="fixed inset-0 -z-10 w-full h-full bg-black overflow-hidden">
+        <div className="absolute inset-0">
+          {Array.from({ length: 200 }).map((_, i) => {
+            const size = Math.random() * 3 + 1;
+            const opacity = Math.random() * 0.8 + 0.2;
+            const isGray = Math.random() > 0.6;
+            const speed = Math.random() * 10;
+            return (
+              <div
+                key={i}
+                className={`absolute rounded-full ${isGray ? 'bg-primary' : 'bg-white'}`}
+                style={{
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  opacity,
+                  animation: `moveStars ${speed}s linear infinite`
+                }}
+              />
+            );
+          })}
+        </div>
       </div>
       
       </div>
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-7xl md:text-[12rem] font-black tracking-tighter leading-none mb-4 uppercase">
+          <h1 className="text-7xl md:text-[12rem] font-display font-black tracking-tighter leading-none mb-4 uppercase">
             LUMOS
           </h1>
           <p className="text-xs md:text-sm font-mono tracking-[0.5em] uppercase opacity-80">
-            Avant-Garde Optics for the Dark Room
+            Avant-Garde Seeking perfection
           </p>
           <div className="mt-8">
             {/* enter the void arrow thingie */}
@@ -152,6 +200,23 @@ useEffect(() => {
         <div className="slider-progress-bar">
           <div className="slider-progress"></div>
         </div>
+      </div>
+    </section>
+
+    {/* Philosophy Section */}
+    <section className="min-h-screen flex items-center justify-center px-6 md:px-12 py-32" ref={philosophyRef}>
+      <div className="max-w-4xl mx-auto text-center">
+        <span className="text-primary font-mono text-xs uppercase tracking-widest mb-8 block">Philosophy</span>
+        <div className="typewriter-container">
+          <h2 className="text-4xl md:text-6xl font-display font-black uppercase tracking-tight leading-tight mb-12">
+            <span className="typewriter-text"></span>
+          </h2>
+        </div>
+        <p className="text-lg md:text-xl opacity-80 leading-relaxed max-w-3xl mx-auto">
+          We don't just create products. We craft visions that transcend the ordinary, 
+          pushing boundaries between reality and imagination. LUMOS represents the fusion 
+          of cutting-edge technology with visionary design philosophy.
+        </p>
       </div>
     </section>
 

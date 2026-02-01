@@ -10,12 +10,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'primary': '#ccff00',
+        'primary': '#7e7e7e',
         'background-light': '#f8f8f5',
         'background-dark': '#0a0a0a',
       },
       fontFamily: {
-        'display': ['Space Grotesk', 'sans-serif'],
+        'display': ['Bebas Neue', 'sans-serif'],
         'mono': ['JetBrains Mono', 'monospace']
       },
       borderRadius: {

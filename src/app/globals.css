@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes moveStars {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-100vh);
+  }
+}
+
 .mwg_effect005 .word {
   display: inline-block;
   transform: translate(calc(100vw - 25px), 0);

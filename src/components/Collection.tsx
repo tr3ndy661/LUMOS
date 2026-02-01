@@ -2,140 +2,27 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
+// import TextAnimation from './TextAnimation';
 
 const Collection = () => {
   const sliderRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLParagraphElement>(null);
+  const [currentIndex, setCurrentIndex] = React.useState(0);
 
   const images = [
-    '/images/neon-x-sunglasses.jpg',
-    '/images/void-01-sunglasses.jpg',
-    '/images/spectrum-y-sunglasses.jpg'
+    '/images/693aebf2932784e89c61bda4_mob-min.avif',
+    '/images/6946aee2d5baa87147c2e8a6_012.avif',
+    '/images/6954f278b16b2664ea9350dd_visionary.avif',
+    '/images/6954f7a523a248a07c6595f5_imgi_1_66f15c862f910266b5b1aed8_awwwards_SOTD_cover-Retronova-Nicola-Romei.webp',
   ];
 
-  // exact code from bundle.js for text animation
-  useEffect(() => {
-    const scope = document.querySelector('.mwg_effect005');
-    if (!scope) return;
+  const imageTexts = [
+    'Mobile-first design approach with minimalist aesthetics and modern interface patterns. Creating seamless experiences across all devices with responsive layouts.',
+    'Experimental typography and bold visual hierarchy create striking digital experiences. Pushing boundaries with innovative design solutions that captivate and engage users.',
+    'Visionary attributes drive design beyond aesthetics. They challenge conventions, embrace innovation, and transform ideas into impactful visual stories that resonate deeply.',
+    'Award-winning Retronova project showcasing futuristic design and immersive user experience. Recognized for excellence in digital creativity and innovative interaction design.',
+  ];
 
-    const paragraph = scope.querySelector('.paragraph');
-    if (!paragraph) return;
-
-    if (!paragraph.querySelector('.word')) {
-      const text = (paragraph.textContent || '').trim();
-      paragraph.innerHTML = text
-        .split(/\s+/)
-        .map((word) => `<span class="word">${word}</span>`)
-        .join(' ');
-    }
-
-    const pinHeight = scope.querySelector('.pin-height');
-    const container = scope.querySelector('.container');
-    const words = scope.querySelectorAll('.word');
-    if (!(pinHeight && container && words.length)) return;
-
-    (container as HTMLElement).style.position = 'sticky';
-    (container as HTMLElement).style.top = '0';
-
-    const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
-    const easeInOut4 = (p: number) =>
-      p < 0.5 ? 8 * p * p * p * p : 1 - Math.pow(-2 * p + 2, 4) / 2;
-
-    const getTranslateX = (el: Element) => {
-      const t = getComputedStyle(el).transform;
-      if (!t || t === 'none') return 0;
-      if (t.startsWith('matrix(')) return parseFloat(t.split(',')[4]) || 0;
-      if (t.startsWith('matrix3d(')) return parseFloat(t.split(',')[12]) || 0;
-      return 0;
-    };
-
-    let baseX = Array.from(words, (el) => getTranslateX(el));
-    baseX.forEach((x, i) => gsap.set(words[i], { x }));
-
-    let setX = Array.from(words, (el) => gsap.quickSetter(el, 'x', 'px'));
-    let setO = Array.from(words, (el) => gsap.quickSetter(el, 'opacity'));
-
-    let startY = 0;
-    let endY = 0;
-    let range = 1;
-    let ticking = false;
-    let animComplete = false;
-
-    function measure() {
-      const rect = pinHeight.getBoundingClientRect();
-      const y = window.scrollY;
-      startY = y + rect.top - window.innerHeight * 0.7;
-      endY = y + rect.bottom - window.innerHeight;
-      range = Math.max(1, endY - startY);
-    }
-
-    function update() {
-      ticking = false;
-      const t = clamp01((window.scrollY - startY) / range);
-      const n = words.length;
-      const stagger = 0.05; // slower
-      const totalStagger = stagger * (n - 1);
-      const animWindow = Math.max(0.0001, 1 - totalStagger);
-
-      let allComplete = true;
-      for (let i = 0; i < n; i++) {
-        const localStart = i * stagger;
-        const p = clamp01((t - localStart) / animWindow);
-        const eased = easeInOut4(p);
-        setX[i](baseX[i] * (1 - eased));
-        setO[i](eased);
-        if (eased < 1) allComplete = false;
-      }
-
-      if (allComplete && !animComplete) {
-        animComplete = true;
-        document.body.style.overflow = '';
-      }
-    }
-
-    function onScroll(e: Event) {
-      if (!animComplete) {
-        e.preventDefault();
-        window.scrollTo(0, window.scrollY);
-      }
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(update);
-    }
-
-    function onResize() {
-      gsap.set(words, { clearProps: 'transform,opacity' });
-      measure();
-      baseX = Array.from(words, (el) => getTranslateX(el));
-      baseX.forEach((x, i) => gsap.set(words[i], { x }));
-      setX = Array.from(words, (el) => gsap.quickSetter(el, 'x', 'px'));
-      setO = Array.from(words, (el) => gsap.quickSetter(el, 'opacity'));
-      update();
-    }
-
-    document.body.style.overflow = 'hidden';
-    measure();
-    update();
-    window.addEventListener('scroll', onScroll, { passive: false });
-    window.addEventListener('resize', onResize);
-
-    // auto animate on load
-    setTimeout(() => {
-      window.scrollTo(0, startY + range);
-    }, 100);
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onResize);
-      document.body.style.overflow = '';
-      gsap.set(words, { clearProps: 'all' });
-    };
-  }, []);
-
-  // three.js carousel
   useEffect(() => {
     if (!sliderRef.current || typeof window === 'undefined' || typeof THREE === 'undefined') return;
 
@@ -163,12 +50,26 @@ const Collection = () => {
     let isRunning = false;
 
     const loadPromises = images.map((url, i) => 
-      new Promise<void>(resolve => {
-        textures[i] = textureLoader.load(url, () => resolve());
+      new Promise<void>((resolve, reject) => {
+        textures[i] = textureLoader.load(
+          url,
+          () => {
+            console.log(`Loaded: ${url}`);
+            resolve();
+          },
+          undefined,
+          (error) => {
+            console.error(`Failed to load: ${url}`, error);
+            reject(error);
+          }
+        );
       })
     );
 
+    let cleanup: (() => void) | null = null;
+
     Promise.all(loadPromises).then(() => {
+      console.log('All textures loaded', textures);
       const displacement = textureLoader.load('https://uploads-ssl.webflow.com/5dc1ae738cab24fef27d7fd2/5dcae913c897156755170518_disp1.jpg');
 
       const w1 = textures[0].image?.width || 1;
@@ -292,18 +193,38 @@ const Collection = () => {
         if (nextTexture.image) {
           material.uniforms.res2.value.set(nextTexture.image.width, nextTexture.image.height);
         }
+        
+        // Animate text out
+        if (textRef.current) {
+          gsap.to(textRef.current, {
+            x: -100,
+            opacity: 0,
+            duration: 0.5,
+            ease: 'power2.in'
+          });
+        }
+        
         gsap.to(material.uniforms.progress, {
           value: 1,
           duration: 1,
           ease: 'power2.inOut',
           onComplete: () => {
             current = nextIndex;
+            setCurrentIndex(nextIndex);
             material.uniforms.texture1.value = nextTexture;
             if (nextTexture.image) {
               material.uniforms.res1.value.set(nextTexture.image.width, nextTexture.image.height);
             }
             material.uniforms.progress.value = 0;
             isRunning = false;
+            
+            // Animate text in
+            if (textRef.current) {
+              gsap.fromTo(textRef.current, 
+                { x: 100, opacity: 0 },
+                { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }
+              );
+            }
           }
         });
       };
@@ -317,18 +238,38 @@ const Collection = () => {
         if (prevTexture.image) {
           material.uniforms.res2.value.set(prevTexture.image.width, prevTexture.image.height);
         }
+        
+        // Animate text out
+        if (textRef.current) {
+          gsap.to(textRef.current, {
+            x: 100,
+            opacity: 0,
+            duration: 0.5,
+            ease: 'power2.in'
+          });
+        }
+        
         gsap.to(material.uniforms.progress, {
           value: 1,
           duration: 1,
           ease: 'power2.inOut',
           onComplete: () => {
             current = prevIndex;
+            setCurrentIndex(prevIndex);
             material.uniforms.texture1.value = prevTexture;
             if (prevTexture.image) {
               material.uniforms.res1.value.set(prevTexture.image.width, prevTexture.image.height);
             }
             material.uniforms.progress.value = 0;
             isRunning = false;
+            
+            // Animate text in
+            if (textRef.current) {
+              gsap.fromTo(textRef.current, 
+                { x: -100, opacity: 0 },
+                { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }
+              );
+            }
           }
         });
       };
@@ -338,7 +279,7 @@ const Collection = () => {
       if (nextBtn) nextBtn.addEventListener('click', next);
       if (prevBtn) prevBtn.addEventListener('click', prev);
 
-      return () => {
+      cleanup = () => {
         window.removeEventListener('resize', resize);
         if (nextBtn) nextBtn.removeEventListener('click', next);
         if (prevBtn) prevBtn.removeEventListener('click', prev);
@@ -347,43 +288,43 @@ const Collection = () => {
         material.dispose();
       };
     });
+
+    return () => {
+      if (cleanup) cleanup();
+    };
   }, []);
 
   return (
     <>
-      <section id="concept" className="section mwg_effect005 bg-white text-black">
-        <div className="pin-height">
-          <div id="w-node-bc88ac12-87e5-4bab-38ec-eaa72f660d8d-bfe841e8" className="container">
-            <p className="paragraph is--xxl">
-              A retro-futurist vision shaped through AI imagery, cinematic motion and luminous soundscapes. Metallic silhouettes, fashion influences and synthetic memories merge into an immersive environment where nostalgia bends toward a future that never existed but still feels strangely real.
-            </p>
+      <section className="min-h-screen relative bg-[#0a0a0a] flex">
+        <div className="w-1/4 h-screen flex items-center justify-center px-8 overflow-hidden">
+          <p ref={textRef} className="text-white text-lg font-light leading-relaxed">{imageTexts[currentIndex]}</p>
+        </div>
+        <main className="w-3/4 h-screen relative">
+          <div className="absolute top-8 left-8 z-10">
+            <span className="text-primary font-mono text-xs uppercase tracking-widest">Collection_01</span>
           </div>
-        </div>
-      </section>
-      
-      <section className="min-h-screen relative bg-[#0a0a0a] flex items-center justify-center">
-        <main className="w-full h-screen relative">
-        <div className="absolute top-8 left-8 z-10">
-          <span className="text-primary font-mono text-xs uppercase tracking-widest">Collection_01</span>
-        </div>
-        <div className="controls__wrap absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-4 z-10">
-          <div id="next" className="next cursor-pointer">
-            <div className="px-6 py-3 border border-primary text-primary hover:bg-primary hover:text-black transition-all font-mono text-sm">
-              PREV
+          <div className="w-full h-full relative">
+            <div 
+              ref={sliderRef} 
+              id="slider" 
+              className="w-full h-full absolute inset-0"
+              data-images={JSON.stringify(images)}
+              />
+            <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+          </div>
+          <div className="controls__wrap absolute bottom-12 left-1/2 -translate-x-1/2 flex gap-4 z-10">
+            <div id="prev" className="prev cursor-pointer">
+              <div className="px-6 py-3 border border-primary text-primary hover:bg-primary hover:text-black transition-all font-mono text-sm">
+                PREV
+              </div>
+            </div>
+            <div id="next" className="next cursor-pointer">
+              <div className="px-6 py-3 border border-primary text-primary hover:bg-primary hover:text-black transition-all font-mono text-sm">
+                NEXT
+              </div>
             </div>
           </div>
-          <div id="prev" className="prev cursor-pointer">
-            <div className="px-6 py-3 border border-primary text-primary hover:bg-primary hover:text-black transition-all font-mono text-sm">
-              NEXT
-            </div>
-          </div>
-        </div>
-        <div 
-          ref={sliderRef} 
-          id="slider" 
-          className="w-full h-full relative"
-          data-images={JSON.stringify(images)}
-        />
         </main>
       </section>
     </>

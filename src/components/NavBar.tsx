@@ -73,7 +73,7 @@ const NavBar = () => {
           <Link href="/" className="font-bold tracking-tighter uppercase text-white">LUMOS</Link>
         </div>
          <div className="flex items-center gap-4">
-        <button className='px-6 py-4 bg-primary text-black text-xs font-bold uppercase rounded-full hover:bg-white transition-all tracking-tighter'>Shop</button>
+        <button className='px-6 py-3 border border-primary text-primary hover:bg-primary hover:text-white transition-all font-mono text-sm'>SHOP</button>
         <div className='menu-open' onClick={toggleMenu}>
           <div className="hamburger-icon">
             <span className={`hamburger-line ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
@@ -90,6 +90,13 @@ const NavBar = () => {
         {/* Overlay Top Bar */}
         <div className='menu-overlay-bar'>
           <div className='menu-logo'>
+            <Image 
+              src="/images/logo.svg" 
+              alt="LUMOS LOGO" 
+              width={32}
+              height={32}
+              className="invert-0"
+            />
             <Link href="/">LUMOS</Link>
           </div>
           <div className='menu-close' onClick={toggleMenu}>
@@ -101,12 +108,11 @@ const NavBar = () => {
           </div>
         </div>
 
-        {/* Big X Icon */}
-        <div className='menu-close-icon' onClick={toggleMenu}>
-          <svg width="40" height="40" viewBox="0 0 40 40">
-            <line x1="10" y1="10" x2="30" y2="30" stroke="black" strokeWidth="3" strokeLinecap="round"/>
-            <line x1="30" y1="10" x2="10" y2="30" stroke="black" strokeWidth="3" strokeLinecap="round"/>
-          </svg>
+        {/* Big GitHub Link */}
+        <div className='menu-close-icon'>
+          <a href="https://github.com/tr3ndy661" target="_blank" rel="noopener noreferrer" className="text-black hover:opacity-70 transition-opacity">
+            View GitHub ↗
+          </a>
         </div>
 
         {/* Links Section */}
@@ -134,14 +140,16 @@ const NavBar = () => {
             </div>
             <div className="menu-info-col">
               <p>shop@lumos.com</p>
-              <p>+249 1189 89751</p>
+              <p>+20 1553873166</p>
             </div>
           </div>
         </div>
 
         {/* Preview Section (Bottom Right) */}
         <div className='menu-preview'>
-          <p>View LinkedIn</p>
+          <a href="https://github.com/tr3ndy661/LUMOS" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition-opacity text-black">
+            Site Source Code
+          </a>
         </div>
       </div>
      

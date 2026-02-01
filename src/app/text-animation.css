@@ -1,0 +1,20 @@
+body {
+  font-kerning: none;
+  -webkit-text-rendering: optimizeSpeed;
+  text-rendering: optimizeSpeed;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+.main {
+  display: grid;
+}
+
+body > *,
+.main > * {
+  grid-area: 1/1/-1/-1;
+}
+
+.footer {
+  opacity: 0;
+}
